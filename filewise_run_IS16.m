@@ -3,11 +3,11 @@ addpath('settings');
 
 initial_setting_SNMF_NAT;
 
-fname = 'M03_423C0213_STR.CH6';
-% fname = 'LM_in';
+% fname = 'M04_423C020A_STR.CH6';
+fname = 'LM_in';
 ftype = '.wav';
 path_in = ['wav/',fname,ftype];
-path_denoise = ['wav/',fname,'_out_v3.9_18',ftype];
+path_denoise = ['wav/',fname,'_out_v3.9_18_pc',ftype];
 
 % % Load Event basis
 % load(['basis/Clean_train_car_alarm/','IS16_Splice0-SNMF-preemph_p2_DD0','/R_20.mat']);

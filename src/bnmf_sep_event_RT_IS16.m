@@ -68,8 +68,8 @@ y = filter([1 -p.preemph], 1, y);
 y = p.win_STFT .* y';
 y_pad = [y; zeros(fftlen-sz,1)];
 Y = fft(y_pad);
-Yp = angle(Y(1:floor(fftlen/2)+1));
-Ym = abs(Y(1:floor(fftlen/2)+1)) .^ p.pow;
+Yp = angle(Y(1:fftlen2));
+Ym = abs(Y(1:fftlen2)) .^ p.pow;
 
 %Set zero for LPF effect
 Ym(1:p.DCbin) = zeros(p.DCbin,1);
@@ -77,10 +77,6 @@ Ym(1:p.DCbin) = zeros(p.DCbin,1);
 %FIt zero to floor value
 Ym(:,1) = Ym(:,1) + p.nonzerofloor;
 
-
-
-% % % % %% -------Estimate Noise magnitudes by IMCRA ------------
-% % % % [N_frame_mag]=IMCRA_func(Ym, g, p);
 
 %Block shift
 if m > 1
@@ -359,8 +355,27 @@ if blk_cnt==h
         x_hat(i,:,:)=synth_ifft_buff(tmp_Xm_hat, Yp(splice_ext,:), sz, fftlen, p.win_ISTFT, p.preemph, p.DCbin_back, p.pow);
         x_hat(i,:,:) = x_hat(i,:,:) * p.overlapscale;
     end
+    
     x_tilde = synth_ifft_buff(Xm_tilde(splice_ext,:), Yp(splice_ext,:), sz, fftlen, p.win_ISTFT, p.preemph, p.DCbin_back, p.pow);
     x_tilde = x_tilde * p.overlapscale;
+    
+    % ----------Phase Compensation---------- %
+    if p.phase_comp == 1
+        % STFT
+        x_tilde = filter([1 -p.preemph], 1, x_tilde);
+        x_tilde_pad = [x_tilde; zeros(fftlen-sz,1)];
+        X_tilde2 = fft(x_tilde_pad);
+        
+        %Compensate phase components by SNR (08_K Wojcikci)
+        phase_lambda = lambda_d.^p.pc_alpha ./ (Xm_tilde(splice_ext,:) + 1);
+%         phase_lambda = phase_lambda + p.pc_beta;
+        phase_lambda = phase_lambda(1:end-1);
+        phase_lambda = [phase_lambda; -1* flipud(phase_lambda)];
+        X_tilde_mod = X_tilde2 + phase_lambda;
+        X_tilde_p = angle(X_tilde_mod);
+        X_tilde_m = abs(X_tilde2(1:fftlen2));
+        x_tilde = synth_ifft_buff(X_tilde_m, X_tilde_p, sz, fftlen, ones(p.framelength,1), p.preemph, p.DCbin_back, 1);
+    end    
     
     blk_cnt = 0;
 end

@@ -14,7 +14,11 @@ while i < frame_num+1
         TF = TF_mag(:,i);
     else    
         TF_mag_sym = [TF_mag(:,i);flipud(TF_mag(2:fftlen/2,i))];
-        TF_phase_sym = [TF_phase(:,i);-1*flipud(TF_phase(2:fftlen/2,i))];
+        if length(TF_phase) == fftlen
+            TF_phase_sym = TF_phase;
+        else
+            TF_phase_sym = [TF_phase(:,i);-1*flipud(TF_phase(2:fftlen/2,i))];
+        end
         TF = TF_mag_sym .* exp(sqrt(-1).*TF_phase_sym);
     end
     s_proc = real(ifft(TF));

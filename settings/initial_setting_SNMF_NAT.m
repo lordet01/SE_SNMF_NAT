@@ -12,10 +12,12 @@ p.ForceRewrite = 1; %Forcely rewrite output file
 p.ForceRetrain = 0; %Forcely retrain bases
 p.ForceRetrain_DNMF = 0; %Forcely retrain DNMF bases
 
+
 % BNMF block
 p.blk_len_sep=1;
 p.blk_hop_sep=p.blk_len_sep;
 p.Splice = 0;
+
 
 % Signal Parameters
 p.fs = 16000;
@@ -36,6 +38,7 @@ p.win_ISTFT = sqrt(hann(p.framelength,'periodic'));
 % p.win_ISTFT = hann(p.framelength,'periodic'); %Set type of window
 p.pow = 2; %Power coefficient: [1: Mag., 2: Pow]
 
+
 % NMF parameters
 p.EVENT_NUM = 1;
 p.EVENT_RANK = [1];
@@ -52,6 +55,7 @@ p.train_file_len_max = p.fs * 60; % 1 min, second unit, inf: turn off this optio
 p.train_seq_len_max = p.fs * 720; %12 min
 p.nonzerofloor = 1e-9;
 
+
 %Basis update option
 p.adapt_train_N = 1;
 p.init_N_len = 15; %No. of initial frames used for nosie basis update
@@ -60,6 +64,7 @@ p.m_a = 100; %No. of stacked block for basis adaptation
 p.overlap_m_a = 0.01; %Update cycle for noise learning
 p.Ar_up = 1.0; %Define Ax and Ad ratio for noise dictionary update (Higher: Update frequently, Lower: Update rarely)
  
+
 %Block sparsity options
 p.blk_sparse = 1; %block sparsity switch
 p.P_len_k = 60; % vertical (frequency bin) size of Block for local sparsity calculation
@@ -69,11 +74,13 @@ p.nu = 1.0;
 p.alpha_p = 0.4; %DD smoothing factor for P
 p.blk_gap = 3; %Blk_gap for complexity issue (1 for ideal), Odd only!
 
+
 %MDI options
 p.MDI_est = 0; %MDI estimation option
 p.MDI_est_noise = 0; %MDI estimation option (noise)
 p.sparsity_mdi = 5;
 p.conv_eps_mdi = 1e-5; 
+
 
 %PMWF options
 p.PMWF = 0;
@@ -84,23 +91,25 @@ p.ALPHA_E_PMWF = 0.3; %Mixing ratio between current Event PSD-CM vs average one
 p.norm_period = p.init_N_len; %Normalization period of PSD cov. matrix
 p.Ncov_update = 1;%Update Ncov by cov. mat. from output - input
 
-%Front-end processing
+
+%Front-end & %Back-end processing
 p.preemph = 0.0; %0.92
 p.DCfreq = 80; %Hz
 p.DCbin = floor(p.DCfreq / (p.fs / p.fftlength) + 0.5); %Forcely give 0 to 1~N bin which is not important in speech
-%Back-end processing
 p.DCbin_back = p.DCbin; %Forcely give 0 to 1~N bin which is not important in speech
+
+
 %Multi-channel options
 p.filegap = p.ch; %No. of file consisting one session
 
-%Run option
+
+%Training options 
 p.separation = 1;
 p.B_sep_mode = 'DFT'; %['DFT', 'Mel']
 p.MelConv = 1; %Use frequency scale conversion. 00: Coupled dictionary
-
-%Sub_options
 p.train_VAD = 0;
 p.train_ANOT = 0;
+
 
 %SNMF parameters
 p.cf = 'kl';   %  'is', 'kl', 'ed'; takes precedence over setting the beta value
@@ -113,6 +122,8 @@ p.cost_check = 1;
 p.basis_update_N = 0;
 p.basis_update_E = 0;
 p.est_scale = 1.0;
+
+
 %Single channel enhancement options
 p.ENHANCE_METHOD = 'MMSE'; %['Wiener', 'MMSE']
 %2.1) Parameters of "Decision-Directed" a Priori SNR Estimate
@@ -138,12 +149,19 @@ p.alpha_d = 0.6; % Recursive averaging parameter for the noise
 p.beta = 1.0; %Bias compensation factor in the noise estimator [!!! Give 8 for listening Test!, 2 for objective test]
 p.beta_max = 1000.0;
 
+
+%Phase compensation options
+p.phase_comp = 1;
+p.pc_alpha = 1.15; %pc lambda scaling factor 1
+p.pc_beta = 1000; %pc lambda flooring factor
+
 %VAD for speech training
 p.speech_train_start = round(p.fs * 0.5);
 p.speech_train_end = round(p.fs * 1.5);
 p.speech_train_len = p.speech_train_end - p.speech_train_start;
 
-Testname = ['IS16','_Splice',num2str(p.Splice),''];
+
 %Name of the test system
+Testname = ['IS16','_Splice',num2str(p.Splice),''];
 OUTname = [Testname,'_',p.NMF_algorithm,'_A',num2str(p.adapt_train_N),'_M',num2str(p.MDI_est_noise),'_r',num2str(p.R_x),'_p',num2str(p.pow), ...
            '_',p.ENHANCE_METHOD,'_P',num2str(p.blk_sparse),'_Proposed_IS16_20160324'];

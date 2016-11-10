@@ -1,0 +1,17 @@
+
+
+pp.of=          % overlap factor = (fft length)/(frame increment) [2]
+pp.ti=0.01;    % desired frame increment [0.016 seconds]
+pp.ri          % set to 1 to round ti to the nearest power of 2 samples [0]
+pp.ta          % time const for smoothing SNR estimate [0.396 seconds]
+pp.gx          % maximum posterior SNR as a power ratio [1000 = +30dB]
+pp.gn          % min posterior SNR as a power ratio when estimating prior SNR [1 = 0dB]
+pp.gz          % min posterior SNR as a power ratio [0.001 = -30dB]
+pp.xn          % minimum prior SNR [0]
+pp.xb          % bias compensation factor for prior SNR [1]
+pp.lg          % MMSE target: 0=amplitude, 1=log amplitude [1]
+pp.ne          % noise estimation: 0=min statistics, 1=MMSE [0]
+pp.bt          % threshold for binary gain or -1 for continuous gain [-1]
+pp.mx          % input mixture gain [0]
+pp.rf          % round output signal to an exact number of frames [0]
+pp.tf          % selects time-frequency planes to output in the gg() variable ['g']

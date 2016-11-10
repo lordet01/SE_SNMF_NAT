@@ -1,0 +1,75 @@
+function NMF_sep_RT(path_in, path_denoised, path_noise, path_speech, B_s, B_n, p);
+
+%file I/O initialization
+fin = fopen(path_in,'rb');
+fout = fopen(path_denoised,'wb');
+fnoise = fopen(path_noise,'wb');
+fspeech = fopen(path_speech,'wb');
+
+frame_len = p.framelength;
+frame_shift = p.frameshift;
+shift_ratio = frame_len / frame_shift; %should be integer!!
+
+%Buffer initialization
+g=init_buff(B_s, B_n, p);
+s_in = zeros(frame_len, 1);
+s_out = zeros(frame_len, 1);
+s_noise = zeros(frame_len, 1);
+s_speech = zeros(frame_len, 1);
+
+[filename, ext] = strtok(path_in, '.');
+if strcmp(ext, '.wav')
+   %% Wav processing 
+   fread(fin, 22, 'int16'); %Skip wav header parts
+   
+   cnt = 1;
+   while (1)
+       [s, len] = fread(fin, frame_shift, 'int16');
+
+       if len ~= frame_shift
+           break;
+       else
+           %Frame_wise queing
+           s_in(1:frame_len-frame_shift) = s_in(frame_shift+1:frame_len);
+           s_in(frame_len-frame_shift+1:frame_len) = s;
+           
+           if cnt >= shift_ratio
+               %Put frame-wise algorithm here 
+               [s_d_frame, s_est_frame, n_est_frame, g] = cnmf_sep(s_in, g, p);
+               
+               s_out(1:frame_len-frame_shift) = s_out(frame_shift+1:frame_len);
+               s_out(frame_len-frame_shift+1:frame_len) = zeros(frame_shift,1);
+               s_out(frame_len-frame_shift+1:frame_len) = s_out(frame_len-frame_shift+1:frame_len) + s_d_frame;
+               fwrite(fout, s_out(1:frame_shift), 'int16');
+               
+           end
+       end
+       cnt = cnt + 1;
+   end
+else
+   %% Raw processing
+
+   cnt = 1;
+   while (1)
+       [s, len] = fread(fin, frame_shift, 'int16');
+
+       if len ~= frame_shift
+           break;
+       else
+           %Frame_wise queing
+           s_in(1:frame_len-frame_shift) = s_in(frame_shift+1:frame_len);
+           s_in(frame_len-frame_shift+1:frame_len) = s;
+           
+           if cnt >= shift_ratio
+               %Put frame-wise algorithm here 
+               
+               s_out = cnmf_sep(s_in);
+                
+           end
+       end
+       cnt = cnt + 1;
+   end
+end
+
+
+end

@@ -4,7 +4,7 @@ addpath('settings');
 initial_setting_SNMF_NAT;
 
 % fname = 'M04_423C020A_STR.CH6';
-fname = 'LM_in';
+fname = 'white_0dB_noisy';
 ftype = '.wav';
 path_in = ['wav/',fname,ftype];
 path_denoise = ['wav/',fname,'_out_v3.9_18_pc',ftype];
@@ -35,6 +35,10 @@ B_DFT_x = [B_DFT_sub]; B_Mel_x = [B_Mel_sub];
 load(['basis/CHiME3_bgn_ch6/','TASLP_Splice0-SNMF_p2_DD0','/R_100.mat']);
 B_DFT_d = B_DFT_sub; B_Mel_d = B_Mel_sub;
 
+if p.fs == 8000
+    B_DFT_x = B_DFT_x(1:257,:);
+    B_DFT_d = B_DFT_d(1:257,:);
+end
 
 if size(B_DFT_d,2) < p.R_d
     R_tmp = p.R_d - size(B_DFT_d,2);

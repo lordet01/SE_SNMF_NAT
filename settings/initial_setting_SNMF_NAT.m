@@ -20,7 +20,7 @@ p.Splice = 0;
 
 
 % Signal Parameters
-p.fs = 16000;
+p.fs = 8000;
 p.wintime = 0.040;
 p.hoptime = 0.010;
 p.ch = 1;
@@ -127,7 +127,7 @@ p.est_scale = 1.0;
 %Single channel enhancement options
 p.ENHANCE_METHOD = 'MMSE'; %['Wiener', 'MMSE']
 %2.1) Parameters of "Decision-Directed" a Priori SNR Estimate
-p.alpha_eta=0.4;	% Recursive averaging parameter
+p.alpha_eta=0.05;	% Recursive averaging parameter
 p.eta_min=10^(-18/10);	% Lower limit constraint
 %2.2) Smooth over frequency and time
 % % % p.w = 2; % Size of frequency smoothing window function=2*w+1
@@ -141,7 +141,7 @@ p.eta_min=10^(-18/10);	% Lower limit constraint
 % % % p.delta_yt=3;
 % % % p.delta_s=1.67;		% Local minimum factor
 % % % %2.4) estimate noise magnitues using SAP
-p.alpha_d = 0.6; % Recursive averaging parameter for the noise
+p.alpha_d = 0.95; % Recursive averaging parameter for the noise
 % % % p.alpha_d_long = 0.99;
 % % % p.Vwin = 15;
 % % % p.Nwin = 8;

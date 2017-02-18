@@ -281,8 +281,8 @@ if blk_cnt==h
         X_tilde2 = fft(x_tilde_pad);
         
         %Compensate phase components by SNR (08_K Wojcikci)
-%         phase_lambda = p.pc_lambda;
-        phase_lambda = (lambda_d.^(p.pc_alpha)) ./ (Q.*Xm_tilde(splice_ext,:) + 1);
+        phase_lambda = p.pc_lamda;
+%         phase_lambda = lambda_d.^p.pc_alpha ./ (Xm_tilde(splice_ext,:) + 1);
         phase_lambda = [phase_lambda; -1* flipud(phase_lambda(2:end-1))];
         X_tilde_mod = X_tilde2 + phase_lambda;
         X_tilde_p = angle(X_tilde_mod);
@@ -299,7 +299,7 @@ if blk_cnt==h
               D_ref = Ym;
           else
               if p.phase_comp == 1
-                 D_ref = (Ym.^(1/p.pow) - X_tilde_m) .^ p.pow;
+                 D_ref = Ym - X_tilde_m;
               else
                 M_ref =  (1-G);
                 M_ref(1:p.DCbin) = zeros(p.DCbin,1) + p.nonzerofloor;
@@ -307,7 +307,11 @@ if blk_cnt==h
               end
           end
           
-          %Estimate smoothed noise PSD          
+          %Estimate smoothed noise PSD
+          if l == 1
+              lambda_Gy=Ym;
+          end
+          
           lambda_Gy = D_ref;
           lambda_d_blk = [lambda_d_blk(:,2:p.m_a) lambda_Gy];
           %         plot(lambda_d_blk);

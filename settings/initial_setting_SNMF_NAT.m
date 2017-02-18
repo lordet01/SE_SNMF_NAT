@@ -20,7 +20,7 @@ p.Splice = 0;
 
 
 % Signal Parameters
-p.fs = 8000;
+p.fs = 16000;
 p.wintime = 0.040;
 p.hoptime = 0.010;
 p.ch = 1;
@@ -67,12 +67,17 @@ p.Ar_up = 1.0; %Define Ax and Ad ratio for noise dictionary update (Higher: Upda
 
 %Block sparsity options
 p.blk_sparse = 1; %block sparsity switch
-p.P_len_k = 60; % vertical (frequency bin) size of Block for local sparsity calculation
-p.P_len_l = 20; % horizental (time frame index) size of Block for local sparsity calculation
+p.P_len_k = 8; % vertical (frequency bin) size of Block for local sparsity calculation
+p.P_len_l = 10; % horizental (time frame index) size of Block for local sparsity calculation
 % p.kappa = 1.0;
 p.nu = 1.0;
-p.alpha_p = 0.4; %DD smoothing factor for P
-p.blk_gap = 3; %Blk_gap for complexity issue (1 for ideal), Odd only!
+p.alpha_p = 0.0; %DD smoothing factor for P
+p.beta_p = 0.0; %DD smoothing factor for P
+p.blk_gap = 1; %Blk_gap for complexity issue (1 for ideal), Odd only!
+p.Q_sig_c = 0.3; %Sigmoid parameter c %Set 0.4 for figure
+p.Q_sig_L = 1.0; %Max scale for LC_est in SBM
+p.Q_sig_a = 20; %Sigmoid parameter a
+p.regul = 0.5;
 
 
 %MDI options
@@ -152,8 +157,8 @@ p.beta_max = 1000.0;
 
 %Phase compensation options
 p.phase_comp = 1;
-p.pc_alpha = 1.15; %pc lambda scaling factor 1
-p.pc_beta = 1000; %pc lambda flooring factor
+p.pc_alpha = 1.2; %pc lambda scaling factor 1
+p.pc_lambda = 50.0; %Empirical lambda set by K. Wojciki
 
 %VAD for speech training
 p.speech_train_start = round(p.fs * 0.5);
